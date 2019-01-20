@@ -17,29 +17,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private RequestQueue requestQ;
+    private RecipeAdapter rAdapter;
+    public ArrayList<Recipes> recipeList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        jsonParse();
         setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(R.id.listview_recipes);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                //context
-                this,
-                //layout (view)
-                R.layout.list_row,
-                //row (view)
-                R.id.recipe_title,
-                //data (model) with bogus data to test our listview
-                new String[]{"first record", "second record", "third record"});
+        rAdapter = new RecipeAdapter(this, recipeList);
+        jsonParse();
 
-        mListView.setAdapter(arrayAdapter);
     }
-
 
     //     JSON PARSER
     private void jsonParse() {
@@ -56,11 +50,13 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray obj = response.getJSONArray("data");
                             Log.e("OBJ: ", obj.toString());
 
-                            for (int i = 0; i < 1; i++) {
+                            for (int i = 0; i < obj.length(); i++) {
+                                Log.e("TAG:", "ERROR");
                                 JSONObject JSON = obj.getJSONObject(i);
-//                                res = JSON.getString("Recipe_Name");
-//                                img = JSON.getString("Recipe_Image");
-//                                textView.setText(res);
+                                String imgurl = JSON.getString("Recipe_Image");
+                                String title = JSON.getString("Recipe_Name");
+                                recipeList.add(new Recipes(imgurl,title));
+                                mListView.setAdapter(rAdapter);
 
                             }
 
@@ -76,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        requestQ = Volley.newRequestQueue(getApplicationContext());
+        requestQ = Volley.newRequestQueue(this);
         requestQ.add(objReq);
+
     }
 }
