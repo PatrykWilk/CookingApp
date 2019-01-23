@@ -5,21 +5,10 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/action_search"
         android:orderInCategory="300"
-        android:title="Home"
-        app:showAsAction="ifRoom"></item>
-
-    <item
-        android:id="@+id/action_ingredients"
-        android:orderInCategory="300"
-        android:title="Ingredients"
-        app:showAsAction="ifRoom"></item>
-
-    <item
-        android:id="@+id/action_shoopinglist"
-        android:orderInCategory="300"
-        android:title="Shopping List"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"></item>
 
 </menu>

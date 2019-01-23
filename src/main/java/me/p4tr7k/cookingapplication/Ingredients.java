@@ -1,29 +1,28 @@
 package me.p4tr7k.cookingapplication;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
+public class Ingredients {
 
-public class Ingredients extends AppCompatActivity {
+    private String ingredient;
+    private String amount;
 
+    public Ingredients(String ingredient, String amount){
+        this.ingredient = ingredient;
+        this.amount = amount;
+    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.ingredients);
+    public String getIngredient() {
+        return ingredient;
+    }
 
-        Button btn = (Button) findViewById(R.id.testButton);
+    public void setIngredient(String ingredient) {
+        this.ingredient = ingredient;
+    }
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent back = new Intent(Ingredients.this, MainActivity.class);
-                startActivity(back);
-            }
-        });
+    public String getAmount() {
+        return amount;
+    }
 
+    public void setAmount(String amount) {
+        this.amount = amount;
     }
 }

@@ -1,5 +1,6 @@
 package me.p4tr7k.cookingapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -9,8 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private RequestQueue requestQ;
     private RecipeAdapter rAdapter;
-    public ArrayList<Recipes> recipeList = new ArrayList<>();
+    private ArrayList<Recipes> recipeList = new ArrayList<>();
     private android.support.v7.widget.Toolbar topToolBar;
-    private ImageView iView;
-    public String title;
-    public String imgurl;
+    private String title;
+    private String imgurl;
+    private String recid;
+    private EditText inpt;
+    private String search;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -49,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
         jsonParse();
         topToolBar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(topToolBar);
-        iView = (ImageView) findViewById(R.id.recipe_img);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        inpt = (EditText) findViewById(R.id.search);
+        inpt.setSelected(false);
     }
 
 
@@ -69,11 +77,21 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_home) {
-            Intent we = new Intent(MainActivity.this,Ingredients.class);
-            startActivity(we);
-            return true;
+        if (id == R.id.action_search) {
+            if (inpt.getText().toString().isEmpty()) {
+                recipeList.clear();
+                jsonParse();
+                inpt.clearFocus();
+            } else {
+                recipeList.clear();
+                search = inpt.getText().toString();
+                jsonSearch();
+                inpt.clearFocus();
+            }
         }
+        hideSoftKeyboard(this);
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -96,16 +114,19 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < obj.length(); i++) {
 //                                Log.e("TAG:", "ERROR");
                                 JSONObject JSON = obj.getJSONObject(i);
+                                recid = JSON.getString("Recipe_ID");
                                 imgurl = JSON.getString("Recipe_Image");
                                 title = JSON.getString("Recipe_Name");
-                                recipeList.add(new Recipes(imgurl,title));
+                                recipeList.add(new Recipes(imgurl,title,recid));
                                 mListView.setAdapter(rAdapter);
                                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         Intent rec = new Intent(MainActivity.this, RecipeDetails.class);
+                                        String rid = recipeList.get(position).getId();
                                         String tit = recipeList.get(position).getTitle();
                                         String url = recipeList.get(position).getImgurl();
+                                        rec.putExtra("recid", rid);
                                         rec.putExtra("title", tit);
                                         rec.putExtra("imgurl", url);
                                         startActivity(rec);
@@ -127,5 +148,71 @@ public class MainActivity extends AppCompatActivity {
         );
         requestQ = Volley.newRequestQueue(this);
         requestQ.add(objReq);
+    }
+
+    //     JSON SEARCH
+    private void jsonSearch() {
+        String link = "https://www.p4tr7k.me/Search.php/?Q=";
+        String endPoint = link + search;
+
+        JsonObjectRequest objReq = new JsonObjectRequest(
+                Request.Method.GET,
+                endPoint,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray obj = response.getJSONArray("results");
+                            Log.e("OBJ: ", obj.toString());
+
+                            for (int i = 0; i < obj.length(); i++) {
+                                    //                                Log.e("TAG:", "ERROR");
+                                    JSONObject JSON = obj.getJSONObject(i);
+                                    recid = JSON.getString("Recipe_ID");
+                                    imgurl = JSON.getString("Recipe_Image");
+                                    title = JSON.getString("Recipe_Name");
+                                    recipeList.add(new Recipes(imgurl, title, recid));
+                                    mListView.setAdapter(rAdapter);
+                                    mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                            Intent rec = new Intent(MainActivity.this, RecipeDetails.class);
+                                            String rid = recipeList.get(position).getId();
+                                            String tit = recipeList.get(position).getTitle();
+                                            String url = recipeList.get(position).getImgurl();
+                                            rec.putExtra("recid", rid);
+                                            rec.putExtra("title", tit);
+                                            rec.putExtra("imgurl", url);
+                                            startActivity(rec);
+                                        }
+                                    });
+                                }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, "No Results Found", Toast.LENGTH_SHORT).show();
+                            inpt.setText("");
+                            recipeList.clear();
+                            jsonParse();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ERROR: ", error.toString());
+                    }
+                }
+        );
+        requestQ = Volley.newRequestQueue(this);
+        requestQ.add(objReq);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
