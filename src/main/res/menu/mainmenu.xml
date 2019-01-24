@@ -11,4 +11,12 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"></item>
 
+    <item
+        android:id="@+id/action_shoppinglist"
+        android:orderInCategory="300"
+        android:title="Search"
+        android:icon="@drawable/ic_shopping"
+        app:showAsAction="ifRoom"></item>
+
+
 </menu>

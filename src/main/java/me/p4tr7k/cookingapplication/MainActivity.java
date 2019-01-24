@@ -89,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 inpt.clearFocus();
             }
         }
+        else if (id == R.id.action_shoppinglist) {
+            Intent shop = new Intent(MainActivity.this, ShopList.class);
+            startActivity(shop);
+        }
         hideSoftKeyboard(this);
 
 

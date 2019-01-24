@@ -35,6 +35,8 @@ public class RecipeDetails extends AppCompatActivity {
     private IngredientsRecipe iRecipe;
     public ArrayList<Ingredients> ingredientList = new ArrayList<>();
     private ImageButton barrow;
+    private ArrayList<String> shopList = new ArrayList<>();
+    private ImageButton sendToShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class RecipeDetails extends AppCompatActivity {
         iView = findViewById(R.id.listview_ingredients);
         iRecipe = new IngredientsRecipe(this, ingredientList);
         barrow = (ImageButton) findViewById(R.id.backbutton);
+        sendToShop = (ImageButton) findViewById(R.id.addToShop);
         barrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +56,15 @@ public class RecipeDetails extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        sendToShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShoppingList shoppingList = ShoppingList.getInstance();
+                shoppingList.setShoppingList(shopList);
+                Log.e("123", shoppingList.getShoppingList().toString());
+
+                }
+            });
 
         intentination();
         jsonParse();
@@ -89,9 +101,11 @@ public class RecipeDetails extends AppCompatActivity {
 //                                Log.e("TAG:", "ERROR");
                                 JSONObject JSON = obj.getJSONObject(i);
                                 String res = JSON.getString("Ingredient_Name");
+                                shopList.add(res);
                                 String amt = JSON.getString("Ingredient_Amount");
                                 ingredientList.add(new Ingredients(res, amt));
                                 iView.setAdapter(iRecipe);
+                                Log.e("TAG", shopList.toString());
                             }
 
                         } catch (JSONException e) {

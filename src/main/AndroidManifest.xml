@@ -19,6 +19,7 @@
         </activity>
         <activity android:name=".Ingredients"/>
         <activity android:name=".RecipeDetails"/>
+        <activity android:name=".ShopList"/>
 
         <meta-data
             android:name="preloaded_fonts"
