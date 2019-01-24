@@ -25,7 +25,7 @@ public class ShoppingList {
     }
 
     public void clearShoppingList () {
-        shoppingList.clear();
+        this.shoppingList.clear();
     }
 
     public static synchronized ShoppingList getInstance() {

@@ -1,7 +1,9 @@
 package me.p4tr7k.cookingapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -59,10 +61,31 @@ public class RecipeDetails extends AppCompatActivity {
         sendToShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShoppingList shoppingList = ShoppingList.getInstance();
-                shoppingList.setShoppingList(shopList);
-                Log.e("123", shoppingList.getShoppingList().toString());
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(RecipeDetails.this);
+
+                builder.setCancelable(true);
+                builder.setTitle("Add to Shopping List?");
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ShoppingList shoppingList = ShoppingList.getInstance();
+                        shoppingList.setShoppingList(shopList);
+                        Intent intent = new Intent(RecipeDetails.this, ShopList.class);
+                        startActivity(intent);
+                    }
+
+                });
+
+                builder.show();
                 }
             });
 

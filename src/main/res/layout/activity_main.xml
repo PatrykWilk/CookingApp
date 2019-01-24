@@ -18,15 +18,57 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
         android:background="@color/colorPrimary"
-        app:titleTextColor="@color/white">
+        app:titleTextColor="@color/white"
+        android:contentInsetLeft="0dp"
+        android:contentInsetStart="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        android:contentInsetRight="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/action_shoppingList"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_weight=".2"
+            android:background="@drawable/ic_shopping"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"/>
+
+        <Spinner
+            android:id="@+id/category"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight=".2"
+            android:background="@drawable/ic_filter"/>
 
         <EditText
             android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1.5"
+            android:layout_marginStart="20dp"
             android:hint="Search By Ingredient"
             android:singleLine="true"
-        />
+            />
+
+        <ImageButton
+            android:id="@+id/action_search"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_weight=".2"
+            android:background="@drawable/ic_search"
+            android:layout_marginEnd="10dp"
+            android:imeOptions="actionDone"/>
+
+        </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
     <ListView
